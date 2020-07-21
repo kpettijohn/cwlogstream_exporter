@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -19,7 +20,7 @@ type AWSEC2Client struct {
 
 // AWSEC2InstanceGatherer interface implments methods to gather AWS EC2 instance data
 type AWSEC2InstanceGatherer interface {
-	GetInstances(string) (*types.AWSEC2DescribeInstances, error)
+	GetInstances(context.Context, string) (*types.AWSEC2DescribeInstances, error)
 }
 
 // NewAWSEC2Client creates a new AWS EC2 API client
@@ -36,7 +37,7 @@ func NewAWSEC2Client(awsRegion string) (*AWSEC2Client, error) {
 }
 
 // GetInstances fetches all running instances using AWSEC2DescribeInstances
-func (c *AWSEC2Client) GetInstances(tagFilter string) (*types.AWSEC2DescribeInstances, error) {
+func (c *AWSEC2Client) GetInstances(ctx context.Context, tagFilter string) (*types.AWSEC2DescribeInstances, error) {
 	var err error
 	filters := []*ec2.Filter{
 		{
@@ -64,7 +65,7 @@ func (c *AWSEC2Client) GetInstances(tagFilter string) (*types.AWSEC2DescribeInst
 	}
 
 	// Get EC2 instances
-	err = c.client.DescribeInstancesPages(params,
+	err = c.client.DescribeInstancesPagesWithContext(ctx, params,
 		func(page *ec2.DescribeInstancesOutput, lastPage bool) bool {
 			for _, r := range page.Reservations {
 				for _, i := range r.Instances {
