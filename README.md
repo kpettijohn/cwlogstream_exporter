@@ -14,9 +14,9 @@ AWS CloudWatch log stream exporter (`cwlogstream_exporter`) collects metrics on 
 
 ## Workflow
 
-1. Fetch all log groups associated to a log group prefix.
+1. Fetch log group.
 2. Fetch all running EC2 instances.
-3. For each log group, collect all log group streams
+3. Collect all log group streams for the given log group.
 4. For each AWS instance check to see if a log group stream exists
 5. Check log group last event time for the instance in question, if no events within the last hour consider the log stream dead.
 
@@ -25,7 +25,7 @@ AWS CloudWatch log stream exporter (`cwlogstream_exporter`) collects metrics on 
 Basic usage
 
 ```
-cwlogstream_exporter -aws.region=us-east-1 -aws.log-group-prefix=/var/log/messages -aws.ec2-tag-filter=Env:dev,Compliance:level1
+cwlogstream_exporter -aws.region=us-east-1 -aws.log-group-name=/var/log/messages -aws.ec2-tag-filter=Env:dev,Compliance:level1
 ```
 
 By default, metrics are exposed at `:9520/metrics`.

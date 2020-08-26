@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,8 +14,8 @@ import (
 
 // AWSLogsGatherer interface implments methods to gather data on a AWS CloudWatch log group and its log streams
 type AWSLogsGatherer interface {
-	GetLogGroups() ([]*types.AWSLogGroup, error)
-	GetLogStreams(group *types.AWSLogGroup) (*types.AWSLogGroupStreams, error)
+	GetLogGroups(context.Context) ([]*types.AWSLogGroup, error)
+	GetLogStreams(ctx context.Context, group *types.AWSLogGroup) (*types.AWSLogGroupStreams, error)
 }
 
 // AWSLogsClient contains an AWS CloudWatch Logs cloudwatchlogsiface client
@@ -39,14 +40,14 @@ func NewAWSLogsClient(awsRegion string, logGroupNamePrefix *string) (*AWSLogsCli
 }
 
 // GetLogGroups returns all log groups under a perfix
-func (c *AWSLogsClient) GetLogGroups() ([]*types.AWSLogGroup, error) {
+func (c *AWSLogsClient) GetLogGroups(ctx context.Context) ([]*types.AWSLogGroup, error) {
 	params := &cloudwatchlogs.DescribeLogGroupsInput{}
 	if len(*c.logGroupNamePrefix) > 0 {
 		params.LogGroupNamePrefix = c.logGroupNamePrefix
 	}
 
 	// Get log groups
-	resp, err := c.client.DescribeLogGroups(params)
+	resp, err := c.client.DescribeLogGroupsWithContext(ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,7 @@ func (c *AWSLogsClient) GetLogGroups() ([]*types.AWSLogGroup, error) {
 }
 
 // GetLogStreams will return all log streams for a group
-func (c *AWSLogsClient) GetLogStreams(group *types.AWSLogGroup) (*types.AWSLogGroupStreams, error) {
+func (c *AWSLogsClient) GetLogStreams(ctx context.Context, group *types.AWSLogGroup) (*types.AWSLogGroupStreams, error) {
 	var err error
 	logStreams := &types.AWSLogGroupStreams{
 		Group: group,
@@ -84,7 +85,7 @@ func (c *AWSLogsClient) GetLogStreams(group *types.AWSLogGroup) (*types.AWSLogGr
 	   so unless you are running more than 150 instances it should include all of the
 	   active log streams. */
 	count := 0
-	err = c.client.DescribeLogStreamsPages(params,
+	err = c.client.DescribeLogStreamsPagesWithContext(ctx, params,
 		func(page *cloudwatchlogs.DescribeLogStreamsOutput, lastPage bool) bool {
 			for _, s := range page.LogStreams {
 				logStreams.Streams = append(logStreams.Streams, s)

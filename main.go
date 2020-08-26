@@ -43,7 +43,7 @@ func main() {
 	prometheus.MustRegister(version.NewCollector("cwlogstream"))
 
 	// Create the exporter and register it
-	exporter, err := collector.New(cfg.awsRegion, cfg.logGroupPrefix, cfg.logStreamTimeout, cfg.ec2InstanceTagFilter)
+	exporter, err := collector.New(cfg.awsRegion, cfg.logGroupName, cfg.logStreamTimeout, cfg.ec2InstanceTagFilter)
 	if err != nil {
 		log.Fatal(err)
 	}

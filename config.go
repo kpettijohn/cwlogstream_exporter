@@ -13,7 +13,7 @@ const (
 	defaultAwsRegion            = ""
 	defaultMetricsPath          = "/metrics"
 	defaultDebug                = false
-	defaultLogGroupPrefix       = ""
+	defaultLogGroupName         = "/var/log/messages"
 	defaultlogStreamTimeout     = time.Duration(60 * time.Minute)
 	defaultEC2InstanceTagFilter = "Env:dev"
 )
@@ -34,7 +34,7 @@ type config struct {
 	awsRegion            string
 	metricsPath          string
 	debug                bool
-	logGroupPrefix       string
+	logGroupName         string
 	logStreamTimeout     time.Duration
 	ec2InstanceTagFilter string
 }
@@ -60,7 +60,7 @@ func new() *config {
 		&c.metricsPath, "web.telemetry-path", defaultMetricsPath, "The path where metrics will be exposed")
 
 	c.fs.StringVar(
-		&c.logGroupPrefix, "aws.log-group-prefix", defaultLogGroupPrefix, "AWS logs group prefix")
+		&c.logGroupName, "aws.log-group-name", defaultLogGroupName, "AWS logs group name")
 
 	c.fs.DurationVar(
 		&c.logStreamTimeout, "aws.log-stream-timeout", defaultlogStreamTimeout, "Timeout for when to consider an AWS log stream dead")
