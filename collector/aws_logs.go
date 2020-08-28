@@ -28,8 +28,8 @@ type AWSLogsClient struct {
 // NewAWSLogsClient creates a new AWS CloudWatch Logs API client
 func NewAWSLogsClient(awsRegion string, logGroupNamePrefix *string) (*AWSLogsClient, error) {
 	// Create AWS session
-	s := session.New(&aws.Config{Region: aws.String(awsRegion)})
-	if s == nil {
+	s, err := session.NewSession(&aws.Config{Region: aws.String(awsRegion)})
+	if err != nil {
 		return nil, fmt.Errorf("error creating aws session")
 	}
 

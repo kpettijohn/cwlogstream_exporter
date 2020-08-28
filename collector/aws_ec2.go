@@ -26,8 +26,8 @@ type AWSEC2InstanceGatherer interface {
 // NewAWSEC2Client creates a new AWS EC2 API client
 func NewAWSEC2Client(awsRegion string) (*AWSEC2Client, error) {
 	// Create AWS session
-	s := session.New(&aws.Config{Region: aws.String(awsRegion)})
-	if s == nil {
+	s, err := session.NewSession(&aws.Config{Region: aws.String(awsRegion)})
+	if err != nil {
 		return nil, fmt.Errorf("Error creating AWS session")
 	}
 
