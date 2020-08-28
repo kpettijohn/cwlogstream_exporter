@@ -9,7 +9,5 @@ RUN go build -ldflags="-s -w" -o /opt/cwlogstream_exporter && \
 
 FROM alpine
 
-RUN adduser --disabled-password app
-COPY --from=builder --chown=app:app /opt/cwlogstream_exporter /opt/cwlogstream_exporter
-USER app
+COPY --from=builder /opt/cwlogstream_exporter /opt/cwlogstream_exporter
 EXPOSE 9520
