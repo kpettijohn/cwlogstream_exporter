@@ -1,5 +1,7 @@
 module github.com/kpettijohn/cwlogstream_exporter
 
+go 1.14
+
 require (
 	github.com/aws/aws-sdk-go v1.34.12
 	github.com/prometheus/client_golang v1.7.1
